@@ -1,6 +1,8 @@
 package comp343proj1;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Drone {
@@ -9,6 +11,10 @@ public class Drone {
 	public int state; //1 or 0, either carrying rubble or free
 	public Point loc; 
 	public int canHold; //Amount of weight drone can hold
+	
+	public List<Drone> DronePop = new ArrayList<Drone>();
+	
+	
 	/**
 	 * Constructor
 	 * @param state
@@ -18,7 +24,6 @@ public class Drone {
 		this.state = state;
 		this.loc = loc;
 		this.canHold = 20;
-		
 	}
 	
 	

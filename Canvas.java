@@ -19,7 +19,8 @@ public class Canvas extends JPanel implements Observer{
 	private static final long serialVersionUID = 1L;
 	private int squareW = 40; //cell width
 	private int squareH = 40; //cell height
-	public Population myPop;
+	public Population cellPop;
+	public DronePop dronePop;
 	Model myModel;
 		
 	/**
@@ -27,6 +28,8 @@ public class Canvas extends JPanel implements Observer{
 	 */
 	//private List<Point> paintedSquares = new ArrayList<Point>();
 	private List<Cell> paintedSquares = new ArrayList<Cell>();
+	private List<Drone> paintDrones = new ArrayList<Drone>();
+
 
 
 	public Canvas(Model m){
@@ -39,26 +42,21 @@ public class Canvas extends JPanel implements Observer{
 				int myX = myPoint.x / 40;
 				
 				Scanner user_input = new Scanner( System.in );
-				String weight;
+				String input;
 				System.out.print("Enter the weight of the rubble: ");
-				weight = user_input.next( );
-				if(weight.equals("trash")){
+				input = user_input.next( );
+				if(input.equals("trash")){
 					myModel.toggle(new Point(myY, myX), 0, 1);
-
-				}else{
-				myModel.toggle(new Point(myY, myX), Integer.parseInt(weight),0);
+				}
+				else if(input.equals("drone")){
+					myModel.toggleDrone(new Point(myY, myX));
+				}
+				
+				else{
+				myModel.toggle(new Point(myY, myX), Integer.parseInt(input),0);
 				}
 			}
 		}); 
-		
-		addMouseMotionListener(new MouseAdapter(){
-			public void mouseDragged(MouseEvent e){
-				Point myPoint = e.getPoint();
-				int myY = myPoint.y / 40;
-				int myX = myPoint.x / 40;
-				//myModel.toggle(new Point(myY, myX));
-			}
-		});
 		
 	}
 	
@@ -89,6 +87,17 @@ public class Canvas extends JPanel implements Observer{
 				g.drawString(Integer.toString(c.weight),p.y*40,p.x*40 + 20);
 			}
 		}
+		//Color drones
+		g.setColor(Color.GREEN);
+		for(int i = 0; i < paintDrones.size(); i++){		
+			g.setColor(Color.GREEN);
+			Drone d = paintDrones.get(i);
+			Point p = d.loc;
+			g.fillRect(p.y * 40, p.x*40, squareW, squareH);
+			g.setColor(Color.BLACK);
+			g.drawString("Drone",p.y*40,p.x*40 + 20);
+			
+		}
 		
 		
 		//Paint grid lines
@@ -105,7 +114,7 @@ public class Canvas extends JPanel implements Observer{
 	@Override
 	public void update(Observable o, Object arg) {
 		paintedSquares = myModel.setPainted2();
-
+		paintDrones = myModel.paintedDrones();
 		this.repaint();
 		}	 
 

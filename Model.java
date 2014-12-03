@@ -8,8 +8,11 @@ import java.util.Observable;
 public class Model extends Observable{
 	int age = 0;
 	private Population pop;
+	private DronePop dronePop;
 	public List<Point> myList = new ArrayList<Point>();
 	public List<Cell> myCellList = new ArrayList<Cell>();
+	public List<Drone> droneList = new ArrayList<Drone>();
+
 
 
 
@@ -18,6 +21,7 @@ public class Model extends Observable{
 	 */
 	public Model(){
 		this.pop = new Population(250,250);
+		this.dronePop = new DronePop(250,250);
 	}
 	
 
@@ -48,26 +52,24 @@ public class Model extends Observable{
 	}
 	
 	
+	public void toggleDrone(Point myPoint){
+		if(dronePop.get(myPoint) != null){
+			Drone d = dronePop.get(myPoint);
+			d.state = 1;
+			dronePop.put(myPoint, d);
+		
+			setChanged();
+			notifyObservers();
+	}
+		else return;
+	}
+	
+	
 	/**
 	 * Searches the current working population for all alive cells and
 	 * adds them to myList to be painted
 	 * @return List<Point>
 	 */
-	public List<Point> setPainted(){
-		for(int i = 0; i < pop.numRows; i++){
-			for(int j = 0; j < pop.numCols; j++){
-				if(pop.get(new Point(i,j)).state == 0){
-					myList.remove(new Point(i,j));
-				}
-				else if(pop.get(new Point(i,j)).state == 1){
-					if(myList.contains(new Point(i,j)) == false){
-						myList.add(new Point(i,j));
-					}
-				}
-			}
-		}
-		return myList;
-	}
 	
 	public List<Cell> setPainted2(){
 		for(int i = 0; i < pop.numRows; i++){
@@ -87,6 +89,24 @@ public class Model extends Observable{
 			}
 		}
 		return myCellList;
+		
+	}
+	
+	
+	public List<Drone> paintedDrones(){
+		for(int i = 0; i < dronePop.numRows; i++){
+			for(int j = 0; j < dronePop.numCols; j++){
+				if(dronePop.get(new Point(i,j)).state == 0){
+					droneList.remove(new Point(i,j));
+				}
+				else if(dronePop.get(new Point(i,j)).state == 1){
+					if(droneList.contains(new Point(i,j)) == false){
+						droneList.add(new Drone(1, new Point(i,j)) );
+					}
+				}
+			}
+		}
+		return droneList;
 		
 	}
 	
