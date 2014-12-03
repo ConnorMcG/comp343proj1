@@ -22,7 +22,7 @@ public class Population {
 		this.numCols = cols;
 		for(int i = 0; i < this.numRows; i++){
 			for(int j =0; j < this.numCols; j++){
-				this.pop.put(new Point(i,j), new Cell(0, new Point(i,j)));
+				this.pop.put(new Point(i,j), new Cell(0, new Point(i,j), 10, 0 ));
 			}
 	}
 	}

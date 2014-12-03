@@ -9,6 +9,8 @@ public class Model extends Observable{
 	int age = 0;
 	private Population pop;
 	public List<Point> myList = new ArrayList<Point>();
+	public List<Cell> myCellList = new ArrayList<Cell>();
+
 
 
 	/**
@@ -31,10 +33,12 @@ public class Model extends Observable{
 	 * Turns a cell on/off
 	 * @param Point myPoint
 	 */
-	public void toggle(Point myPoint){
+	public void toggle(Point myPoint, int w, int trash){
 		if(pop.get(myPoint) != null){
 			Cell c = pop.get(myPoint);
 			c.state = 1;
+			c.weight = w;
+			c.trash = trash;
 			pop.put(myPoint, c);
 		
 			setChanged();
@@ -63,6 +67,27 @@ public class Model extends Observable{
 			}
 		}
 		return myList;
+	}
+	
+	public List<Cell> setPainted2(){
+		for(int i = 0; i < pop.numRows; i++){
+			for(int j = 0; j < pop.numCols; j++){
+				if(pop.get(new Point(i,j)).state == 0){
+					myCellList.remove(new Point(i,j));
+				}
+				else if(pop.get(new Point(i,j)).state == 1){
+					if(myCellList.contains(new Point(i,j)) == false){
+						int isTrash = pop.get(new Point(i,j)).trash;
+						myCellList.add(new Cell(1, 
+											new Point(i,j),
+											pop.get(new Point(i,j)).weight, isTrash)
+											);
+					}
+				}
+			}
+		}
+		return myCellList;
+		
 	}
 	
 	/**

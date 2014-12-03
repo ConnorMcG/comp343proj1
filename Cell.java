@@ -2,23 +2,33 @@ package comp343proj1;
 
 import java.awt.Point;
 
+import javax.swing.JLabel;
+
 public class Cell {
 	
 	
 	public int state;
 	public Point loc;
-	
+	public int weight;
+	public int trash;
 	/**
 	 * Constructor
 	 * @param state
 	 * @param loc
 	 */
-	Cell(int state, Point loc){
+	Cell(int state, Point loc, int weight, int trash){
 		this.state = state;
 		this.loc = loc;
+		this.weight = weight;
+		this.trash = trash;
 		
 	}
 
+	public char[] getWeight(){
+		String str = String.valueOf(this.weight);
+		char[] charArray = str.toCharArray();
+		return charArray;
+	}
 	
 	/**
 	 * Get the location of a Cell

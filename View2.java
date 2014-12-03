@@ -51,6 +51,7 @@ public class View2 extends JFrame {
 	    c.gridx = 1;
 	    c.gridy = 20;
 	    pane.add(stopButton, c);
+	 
 	    
 	    nextButton = new JButton("Next");
 	    c.weightx = 0.5;

@@ -1,6 +1,7 @@
 package comp343proj1;
 
 import java.awt.Color;
+import java.util.Scanner;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -24,7 +25,8 @@ public class Canvas extends JPanel implements Observer{
 	/**
 	 * Initialize array to keep track of alive points
 	 */
-	private List<Point> paintedSquares = new ArrayList<Point>();
+	//private List<Point> paintedSquares = new ArrayList<Point>();
+	private List<Cell> paintedSquares = new ArrayList<Cell>();
 
 
 	public Canvas(Model m){
@@ -35,7 +37,17 @@ public class Canvas extends JPanel implements Observer{
 				Point myPoint = e.getPoint();
 				int myY = myPoint.y / 40;
 				int myX = myPoint.x / 40;
-				myModel.toggle(new Point(myY, myX));
+				
+				Scanner user_input = new Scanner( System.in );
+				String weight;
+				System.out.print("Enter the weight of the rubble: ");
+				weight = user_input.next( );
+				if(weight.equals("trash")){
+					myModel.toggle(new Point(myY, myX), 0, 1);
+
+				}else{
+				myModel.toggle(new Point(myY, myX), Integer.parseInt(weight),0);
+				}
 			}
 		}); 
 		
@@ -44,7 +56,7 @@ public class Canvas extends JPanel implements Observer{
 				Point myPoint = e.getPoint();
 				int myY = myPoint.y / 40;
 				int myX = myPoint.x / 40;
-				myModel.toggle(new Point(myY, myX));
+				//myModel.toggle(new Point(myY, myX));
 			}
 		});
 		
@@ -64,9 +76,18 @@ public class Canvas extends JPanel implements Observer{
 		
 		//Paint alive cells
 		g.setColor(Color.RED);
-		for(int i = 0; i < paintedSquares.size(); i++){			
-			Point p = paintedSquares.get(i);
-			g.fillRect(p.y * 40, p.x*40, squareW, squareH);
+		for(int i = 0; i < paintedSquares.size(); i++){		
+			g.setColor(Color.RED);
+			Cell c = paintedSquares.get(i);
+			Point p = c.loc;
+			if(c.trash == 1){
+				g.setColor(Color.BLACK);
+				g.fillRect(p.y * 40, p.x*40, squareW, squareH);
+			}else{
+				g.fillRect(p.y * 40, p.x*40, squareW, squareH);
+				g.setColor(Color.BLACK);
+				g.drawString(Integer.toString(c.weight),p.y*40,p.x*40 + 20);
+			}
 		}
 		
 		
@@ -83,7 +104,8 @@ public class Canvas extends JPanel implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
-		paintedSquares = myModel.setPainted();
+		paintedSquares = myModel.setPainted2();
+
 		this.repaint();
 		}	 
 
