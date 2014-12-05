@@ -63,6 +63,18 @@ public class Population {
 		return pop.get(p);
 	}
 	
+	public Point getTrashCan(){
+		for(int i = 0; i < this.numRows; i++){
+			for(int j =0; j < this.numCols; j++){
+				Cell c = this.get(new Point(i,j));
+				if(c.trash == 1){
+					return c.loc;
+				}
+			}
+		}
+		return new Point(null);
+	}
+	
 	public void put(Point p, Cell c){
 		pop.put(p, c);
 	}

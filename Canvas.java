@@ -20,15 +20,12 @@ public class Canvas extends JPanel implements Observer{
 	private int squareW = 40; //cell width
 	private int squareH = 40; //cell height
 	public Population cellPop;
-	public DronePop dronePop;
 	Model myModel;
 		
 	/**
 	 * Initialize array to keep track of alive points
 	 */
-	//private List<Point> paintedSquares = new ArrayList<Point>();
 	private List<Cell> paintedSquares = new ArrayList<Cell>();
-	private List<Drone> paintDrones = new ArrayList<Drone>();
 
 
 
@@ -88,15 +85,14 @@ public class Canvas extends JPanel implements Observer{
 			}
 		}
 		//Color drones
-		g.setColor(Color.GREEN);
-		for(int i = 0; i < paintDrones.size(); i++){		
+		for(int i = 0; i < myModel.droneList.size(); i++){
 			g.setColor(Color.GREEN);
-			Drone d = paintDrones.get(i);
+
+			Drone d = myModel.droneList.get(i);
 			Point p = d.loc;
 			g.fillRect(p.y * 40, p.x*40, squareW, squareH);
 			g.setColor(Color.BLACK);
 			g.drawString("Drone",p.y*40,p.x*40 + 20);
-			
 		}
 		
 		
@@ -114,7 +110,6 @@ public class Canvas extends JPanel implements Observer{
 	@Override
 	public void update(Observable o, Object arg) {
 		paintedSquares = myModel.setPainted2();
-		paintDrones = myModel.paintedDrones();
 		this.repaint();
 		}	 
 

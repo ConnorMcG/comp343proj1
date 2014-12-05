@@ -34,10 +34,11 @@ public class Control {
 		public void actionPerformed(ActionEvent e)
 		{
 			timer.start();
-			if(myModel.myList.isEmpty() == true){
+			if(myModel.myCellList.isEmpty() == true){
 				timer.stop();
 			}
 			else{
+				myModel.startSim();
 				myView.setAge(myModel.age + " ");
 			}
 		}
