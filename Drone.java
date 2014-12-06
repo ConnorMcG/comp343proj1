@@ -53,6 +53,53 @@ public class Drone {
 	public void setLoc(Point loc){
 		this.loc = loc;
 	}
+
+
+	@Override
+	public String toString() {
+		return "Drone [state=" + state + ", loc=" + loc + ", canHold="
+				+ canHold + ", DronePop=" + DronePop + "]";
+	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((DronePop == null) ? 0 : DronePop.hashCode());
+		result = prime * result + canHold;
+		result = prime * result + ((loc == null) ? 0 : loc.hashCode());
+		result = prime * result + state;
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Drone other = (Drone) obj;
+		if (DronePop == null) {
+			if (other.DronePop != null)
+				return false;
+		} else if (!DronePop.equals(other.DronePop))
+			return false;
+		if (canHold != other.canHold)
+			return false;
+		if (loc == null) {
+			if (other.loc != null)
+				return false;
+		} else if (!loc.equals(other.loc))
+			return false;
+		if (state != other.state)
+			return false;
+		return true;
+	}
 	
 
 
