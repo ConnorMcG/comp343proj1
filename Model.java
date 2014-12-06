@@ -8,20 +8,17 @@ import java.util.Observable;
 
 public class Model extends Observable{
 	int age = 0;
-	private Population pop;
 	public List<Cell> myCellList = new ArrayList<Cell>();
 	public List<Drone> droneList = new ArrayList<Drone>();
-	
 	public List<Integer> closestDrone = new ArrayList<Integer>();
-
-
+	Point TRASHCAN = new Point(0,0);
+	Drone droneWRubble = new Drone (0, null);
 
 
 	/**
 	 * Constructor for new GameOfLifeModel
 	 */
 	public Model(){
-		this.pop = new Population(250,250);
 	}
 	
 
@@ -31,7 +28,7 @@ public class Model extends Observable{
 	 * Turns a cell on/off
 	 * @param Point myPoint
 	 */
-	public void toggle(Point myPoint, int w, int trash){
+	/*public void toggle(Point myPoint, int w){
 		if(pop.get(myPoint) != null){
 			Cell c = pop.get(myPoint);
 			if(c.state == 0){
@@ -41,13 +38,19 @@ public class Model extends Observable{
 				c.state = 0;
 			}
 			c.weight = w;
-			c.trash = trash;
 			pop.put(myPoint, c);
 		
 			setChanged();
 			notifyObservers();
 	}
 		else return;
+	}*/
+	
+	public void toggle(Point p, int w){
+		Cell c = new Cell(1, p, w);
+		this.myCellList.add(c);
+		setChanged();
+		notifyObservers();
 	}
 	
 	
@@ -65,32 +68,11 @@ public class Model extends Observable{
 	 * adds them to myList to be painted
 	 * @return List<Point>
 	 */
-	
-	public List<Cell> setPainted2(){
-		for(int i = 0; i < pop.numRows; i++){
-			for(int j = 0; j < pop.numCols; j++){
-				if(pop.get(new Point(i,j)).state == 0){
-					myCellList.remove(new Point(i,j));
-				}
-				else if(pop.get(new Point(i,j)).state == 1){
-					if(myCellList.contains(new Point(i,j)) == false){
-						int isTrash = pop.get(new Point(i,j)).trash;
-						myCellList.add(new Cell(1, 
-											new Point(i,j),
-											pop.get(new Point(i,j)).weight, isTrash)
-											);
-					}
-				}
-			}
-		}
-		return myCellList;
-		
-	}
-	
-	
+
 	
 	public static int minIndex (List<Integer> list) {
-		  return list.indexOf (Collections.min(list)); }
+		  return list.indexOf (Collections.min(list)); 
+		  }
 	
 	public void startSim(){
 		
@@ -107,9 +89,9 @@ public class Model extends Observable{
 		 * 			else:
 		 * 				remove rubble from pop, move drone back
 		 */
-		for(int i = 0; i < pop.numRows; i++){
-			for(int j = 0; j < pop.numCols; j++){
-				Cell c = pop.get(new Point(i,j));
+		for(int i = 0; i < this.myCellList.size(); i++){
+			Cell c = this.myCellList.get(i);
+				Point rubbleLoc = c.loc;
 				if(c.state == 1){
 					
 					for(int a = 0; a < droneList.size(); a++){
@@ -123,9 +105,68 @@ public class Model extends Observable{
 					if(droneList.contains(new Drone(1, b))){
 						droneList.remove(new Drone(1,b));
 						}
-					droneList.add(new Drone(1, new Point(b.x -1, b.y)));
-				
+					
+					//Trash collection algorithm
+					if(rubbleLoc.x == b.x && rubbleLoc.y == b.y){
+						droneList.add(new Drone(1,b));
+						
+						//Start moving towards trash can
+						if(TRASHCAN.x == b.x && TRASHCAN.y == b.y){
+							System.out.println("Trash thrown away");
+							myCellList.remove(c);
+						}
+						else{
+							if(TRASHCAN.x != b.x){
+								if(TRASHCAN.x > b.x){
+									droneList.remove(new Drone(1, new Point(b.x, b.y)));
+									droneList.add(new Drone(1, new Point(b.x +1, b.y)));
+									this.myCellList.remove(c);
+									this.myCellList.add(new Cell(c.state,new Point(b.x +1, b.y), c.weight));
+								}
+								else if(TRASHCAN.x < b.x){
+									droneList.remove(new Drone(1, new Point(b.x, b.y)));
+									droneList.add(new Drone(1, new Point(b.x -1, b.y)));
+									this.myCellList.remove(c);
+									this.myCellList.add(new Cell(c.state,new Point(b.x -1, b.y), c.weight));
+								}
+						}
+						else if (TRASHCAN.y != b.y){
+							if(TRASHCAN.y > b.y){
+								droneList.remove(new Drone(1, new Point(b.x, b.y)));
+								droneList.add(new Drone(1, new Point(b.x, b.y+1)));
+								this.myCellList.remove(c);
+								this.myCellList.add(new Cell(c.state,new Point(b.x, b.y+1), c.weight));
+							}
+							else if(TRASHCAN.y < b.y){
+								droneList.remove(new Drone(1, new Point(b.x, b.y)));
+								droneList.add(new Drone(1, new Point(b.x, b.y-1)));
+								this.myCellList.remove(c);
+								this.myCellList.add(new Cell(c.state,new Point(b.x, b.y-1), c.weight));
+								}
+							}
+						}
+					}//Start moving towards rubble
+					else{
+						if(rubbleLoc.x != b.x || rubbleLoc.y != b.y){
+							if(rubbleLoc.x > b.x){
+								droneList.remove(new Drone(1, new Point(b.x, b.y)));
+								droneList.add(new Drone(1, new Point(b.x +1, b.y)));
+							}
+							else if(rubbleLoc.x < b.x){
+								droneList.remove(new Drone(1, new Point(b.x, b.y)));
+								droneList.add(new Drone(1, new Point(b.x -1, b.y)));
+							}
+							else if(rubbleLoc.y > b.y){	
+								droneList.remove(new Drone(1, new Point(b.x, b.y)));
+								droneList.add(new Drone(1, new Point(b.x, b.y+1)));
+							}
+							else if(rubbleLoc.y < b.y){
+								droneList.remove(new Drone(1, new Point(b.x, b.y)));
+								droneList.add(new Drone(1, new Point(b.x, b.y-1)));
+						}
+					}
 				}
+			
 					
 					
 					closestDrone.clear();

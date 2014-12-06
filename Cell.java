@@ -10,17 +10,15 @@ public class Cell {
 	public int state;
 	public Point loc;
 	public int weight;
-	public int trash;
 	/**
 	 * Constructor
 	 * @param state
 	 * @param loc
 	 */
-	Cell(int state, Point loc, int weight, int trash){
+	Cell(int state, Point loc, int weight){
 		this.state = state;
 		this.loc = loc;
 		this.weight = weight;
-		this.trash = trash;
 		
 	}
 
