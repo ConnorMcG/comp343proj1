@@ -9,6 +9,8 @@ import java.util.Observable;
 public class Model extends Observable{
 	int age = 0;
 	public List<Cell> myCellList = new ArrayList<Cell>();
+	public List<Cell> currentCell = new ArrayList<Cell>();
+
 	public List<Drone> droneList = new ArrayList<Drone>();
 	public List<Integer> closestDrone = new ArrayList<Integer>();
 	Point TRASHCAN = new Point(0,0);
@@ -21,30 +23,6 @@ public class Model extends Observable{
 	public Model(){
 	}
 	
-
-	
-	
-	/**
-	 * Turns a cell on/off
-	 * @param Point myPoint
-	 */
-	/*public void toggle(Point myPoint, int w){
-		if(pop.get(myPoint) != null){
-			Cell c = pop.get(myPoint);
-			if(c.state == 0){
-				c.state = 1;
-			}
-			else{
-				c.state = 0;
-			}
-			c.weight = w;
-			pop.put(myPoint, c);
-		
-			setChanged();
-			notifyObservers();
-	}
-		else return;
-	}*/
 	
 	public void toggle(Point p, int w){
 		Cell c = new Cell(1, p, w);
@@ -63,11 +41,6 @@ public class Model extends Observable{
 	}
 	
 	
-	/**
-	 * Searches the current working population for all alive cells and
-	 * adds them to myList to be painted
-	 * @return List<Point>
-	 */
 
 	
 	public static int minIndex (List<Integer> list) {
@@ -76,22 +49,10 @@ public class Model extends Observable{
 	
 	public void startSim(){
 		
-		
-		/*
-		 * for each cell in pop
-		 * 		if not trashcan then:
-		 * 			send drone to that cell
-		 * 			drone sees if it needs help or not
-		 * 		if drone doesnt need help:
-		 * 			move drone and rubble to trash
-		 * 			if current cell doesnt equal trash:
-		 * 				keep moving towards trash
-		 * 			else:
-		 * 				remove rubble from pop, move drone back
-		 */
-		for(int i = 0; i < this.myCellList.size(); i++){
-			Cell c = this.myCellList.get(i);
-				Point rubbleLoc = c.loc;
+		if(!myCellList.isEmpty()){
+			Cell c = this.myCellList.get(0);
+			
+			Point rubbleLoc = c.loc;
 				if(c.state == 1){
 					
 					for(int a = 0; a < droneList.size(); a++){
@@ -105,6 +66,7 @@ public class Model extends Observable{
 					if(droneList.contains(new Drone(1, b))){
 						droneList.remove(new Drone(1,b));
 						}
+				
 					
 					//Trash collection algorithm
 					if(rubbleLoc.x == b.x && rubbleLoc.y == b.y){
@@ -120,28 +82,24 @@ public class Model extends Observable{
 								if(TRASHCAN.x > b.x){
 									droneList.remove(new Drone(1, new Point(b.x, b.y)));
 									droneList.add(new Drone(1, new Point(b.x +1, b.y)));
-									this.myCellList.remove(c);
-									this.myCellList.add(new Cell(c.state,new Point(b.x +1, b.y), c.weight));
+									c.loc = new Point(b.x +1, b.y);
 								}
 								else if(TRASHCAN.x < b.x){
 									droneList.remove(new Drone(1, new Point(b.x, b.y)));
 									droneList.add(new Drone(1, new Point(b.x -1, b.y)));
-									this.myCellList.remove(c);
-									this.myCellList.add(new Cell(c.state,new Point(b.x -1, b.y), c.weight));
+									c.loc = new Point(b.x -1, b.y);
 								}
 						}
 						else if (TRASHCAN.y != b.y){
 							if(TRASHCAN.y > b.y){
 								droneList.remove(new Drone(1, new Point(b.x, b.y)));
 								droneList.add(new Drone(1, new Point(b.x, b.y+1)));
-								this.myCellList.remove(c);
-								this.myCellList.add(new Cell(c.state,new Point(b.x, b.y+1), c.weight));
+								c.loc = new Point(b.x, b.y+1);
 							}
 							else if(TRASHCAN.y < b.y){
 								droneList.remove(new Drone(1, new Point(b.x, b.y)));
 								droneList.add(new Drone(1, new Point(b.x, b.y-1)));
-								this.myCellList.remove(c);
-								this.myCellList.add(new Cell(c.state,new Point(b.x, b.y-1), c.weight));
+								c.loc = new Point(b.x, b.y-1);
 								}
 							}
 						}
@@ -171,11 +129,10 @@ public class Model extends Observable{
 					
 					closestDrone.clear();
 			}
+				setChanged();
+				notifyObservers();
 		}
-			
-		setChanged();
-		notifyObservers();
-}
+			}
 	
 	/**
 	 * runGameOfLife is used by the ActionListener for the Start Button

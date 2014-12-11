@@ -82,6 +82,8 @@ public class Canvas extends JPanel implements Observer{
 			g.drawString(Integer.toString(c.weight),p.y*40,p.x*40 + 20);
 		}
 		
+		
+		
 		//Color drones
 		for(int i = 0; i < myModel.droneList.size(); i++){
 			g.setColor(Color.GREEN);
