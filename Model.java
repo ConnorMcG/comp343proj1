@@ -9,7 +9,7 @@ import java.util.Observable;
 public class Model extends Observable{
 	int age = 0;
 	public List<Cell> myCellList = new ArrayList<Cell>();
-	public List<Cell> currentCell = new ArrayList<Cell>();
+	public List<Drone> currentCell = new ArrayList<Drone>();
 
 	public List<Drone> droneList = new ArrayList<Drone>();
 	public List<Integer> closestDrone = new ArrayList<Integer>();
@@ -38,6 +38,57 @@ public class Model extends Observable{
 		this.droneList.add(d);
 		setChanged();
 		notifyObservers();
+	}
+	
+	public boolean tooHeavy(Drone d, Cell c){
+		if(c.weight > 10){
+			c.weight -= 10;	
+			Drone next;
+
+			for(int i = 0; i<droneList.size();i++){
+				if(droneList.get(i) != d){
+					next = droneList.get(i);
+					currentCell.add(next);
+					
+					while( c.loc.y != next.loc.y || c.loc.x != next.loc.x){
+						
+						if(c.loc.x > next.loc.x){	
+							currentCell.remove(next);
+							currentCell.add(new Drone(1, new Point(next.loc.x +1, next.loc.y)));
+							next.loc = new Point(next.loc.x +1, next.loc.y);
+						}
+						else if(c.loc.x < next.loc.x){
+							currentCell.remove(next);
+							currentCell.add(new Drone(1, new Point(next.loc.x -1, next.loc.y)));
+							next.loc = new Point(next.loc.x -1, next.loc.y);
+
+						}
+						else if(c.loc.y > next.loc.y){	
+							currentCell.remove(next);
+							currentCell.add(new Drone(1, new Point(next.loc.x, next.loc.y+1)));
+							next.loc = new Point(next.loc.x, next.loc.y+1);
+
+						}
+						else if(c.loc.y < next.loc.y){	
+							currentCell.remove(next);
+							currentCell.add(new Drone(1, new Point(next.loc.x, next.loc.y-1)));
+							next.loc = new Point(next.loc.x, next.loc.y-1);
+
+					}
+					
+					setChanged();
+					notifyObservers();
+					}//end while
+					droneList.remove(next);
+					currentCell.remove(next);
+					droneList.add(new Drone(1, new Point(1,1)));
+					tooHeavy(d, c);
+
+				}
+			}
+					
+	}
+		return false;
 	}
 	
 	
@@ -71,6 +122,9 @@ public class Model extends Observable{
 					//Trash collection algorithm
 					if(rubbleLoc.x == b.x && rubbleLoc.y == b.y){
 						droneList.add(new Drone(1,b));
+						
+						tooHeavy(closest, c);
+						
 						
 						//Start moving towards trash can
 						if(TRASHCAN.x == b.x && TRASHCAN.y == b.y){

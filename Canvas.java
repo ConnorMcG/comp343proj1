@@ -82,6 +82,7 @@ public class Canvas extends JPanel implements Observer{
 			g.drawString(Integer.toString(c.weight),p.y*40,p.x*40 + 20);
 		}
 		
+	
 		
 		
 		//Color drones
@@ -94,6 +95,14 @@ public class Canvas extends JPanel implements Observer{
 			g.drawString("Drone",p.y*40,p.x*40 + 20);
 		}
 		
+		for(int i = 0; i < myModel.currentCell.size(); i++){
+			g.setColor(Color.GREEN);
+			Drone d = myModel.currentCell.get(i);
+			Point p = d.loc;
+			g.fillRect(p.y * 40, p.x*40, squareW, squareH);
+			g.setColor(Color.BLACK);
+			g.drawString("Drone",p.y*40,p.x*40 + 20);
+		}
 		
 		//Paint grid lines
 		g.setColor(Color.BLACK);
